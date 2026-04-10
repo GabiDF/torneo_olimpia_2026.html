@@ -334,7 +334,7 @@ let players=[
   {n:"Ian Tobias",a:"González Álvarez",d:"55764559",y:2016,b:"26/09/2016",p:"Jugador",c:"Sin casaca",os:"Osmedic",e:"matias141291@gmail.com",o:"Colegio",f:false,ian:true},
 ];
 
-function isOk(p){ return !PENDING_DNIS.has(p.d) && !(p.d==='' && p.n==='Alex'); }
+function isOk(p){ return !PENDING_DNIS.has(p.d); }
 function enrich(p){
   const cat=getCat(p.y,p.f)||'Sin cat.';
   const base=getBase(p.y)||'Sin cat.';
