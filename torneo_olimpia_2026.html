@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torneo Olimpia 2026 · Fantasy Skate</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Fantasy Skate: azul oscuro, azul, celeste, blanco, negro */
+    --fs-dark:  #0D3B6E;
+    --fs-blue:  #1565C0;
+    --fs-mid:   #1976D2;
+    --fs-light: #90CAF9;
+    --fs-ice:   #E3F2FD;
+    --fs-white: #F5FAFF;
+    --fs-black: #0A0E1A;
+
+    --bg:     #07111F;
+    --card:   #0D1F36;
+    --card2:  #102540;
+    --border: rgba(144,202,249,0.12);
+    --text:   #E8F4FF;
+    --muted:  #7BA8CC;
+    --gold:   #FFEE58;   /* amarillo confirmado */
+    --pend:   #1E2A3A;   /* fondo pendiente */
+
+    /* categorías — shades de azul/celeste */
+    --U6:  #90CAF9; --U6bg:  rgba(144,202,249,0.15);
+    --U8:  #64B5F6; --U8bg:  rgba(100,181,246,0.15);
+    --U10: #42A5F5; --U10bg: rgba(66,165,245,0.15);
+    --U12: #1E88E5; --U12bg: rgba(30,136,229,0.15);
+    --U14: #1565C0; --U14bg: rgba(21,101,192,0.15);
+    --U16: #0D3B6E; --U16bg: rgba(13,59,110,0.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+    background-image:
+      radial-gradient(ellipse at 15% 0%,rgba(21,101,192,.18) 0%,transparent 55%),
+      radial-gradient(ellipse at 85% 100%,rgba(13,59,110,.2) 0%,transparent 55%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231565C0' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ── HEADER ── */
+  header{position:relative;padding:26px 40px 18px;border-bottom:1px solid var(--border);overflow:hidden}
+  header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--fs-dark),var(--fs-blue),var(--fs-light),var(--fs-blue),var(--fs-dark))}
+  .header-top{display:flex;align-items:flex-start;gap:16px}
+  .logo-mark{width:54px;height:54px;background:linear-gradient(135deg,var(--fs-blue),var(--fs-dark));
+    border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;
+    box-shadow:0 4px 20px rgba(21,101,192,.5);border:1px solid rgba(144,202,249,.2)}
+  h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(22px,4vw,40px);
+    letter-spacing:.02em;line-height:1;text-transform:uppercase}
+  h1 em{font-style:normal;color:var(--fs-light)}
+  .subtitle{font-size:12px;color:var(--muted);margin-top:5px;letter-spacing:.12em;text-transform:uppercase}
+  .rule-note{display:inline-flex;align-items:center;gap:6px;
+    background:rgba(144,202,249,.08);border:1px solid rgba(144,202,249,.2);
+    border-radius:20px;padding:3px 12px;font-size:12px;color:var(--fs-light);margin-top:8px}
+
+  /* ── LEGEND ── */
+  .legend{display:flex;gap:16px;flex-wrap:wrap;padding:10px 40px;border-bottom:1px solid var(--border);align-items:center}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+  .swatch-ok{background:var(--gold)}
+  .swatch-pend{background:var(--pend);border:1px solid rgba(255,255,255,.1)}
+
+  /* ── PILLS ── */
+  .pills{display:flex;flex-wrap:wrap;gap:8px;padding:14px 40px;border-bottom:1px solid var(--border)}
+  .pill{padding:5px 15px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;font-size:13px;letter-spacing:.06em;cursor:pointer;transition:all .2s;border:2px solid transparent}
+  .pill-all{background:rgba(255,255,255,.07);color:var(--text);border-color:rgba(255,255,255,.12)}
+  .pill-U6 {background:var(--U6bg); color:var(--U6); border-color:rgba(144,202,249,.25)}
+  .pill-U8 {background:var(--U8bg); color:var(--U8); border-color:rgba(100,181,246,.25)}
+  .pill-U10{background:var(--U10bg);color:var(--U10);border-color:rgba(66,165,245,.25)}
+  .pill-U12{background:var(--U12bg);color:var(--U12);border-color:rgba(30,136,229,.25)}
+  .pill-U14{background:var(--U14bg);color:var(--U14);border-color:rgba(21,101,192,.25)}
+  .pill-U16{background:var(--U16bg);color:var(--fs-light);border-color:rgba(13,59,110,.4)}
+  .pill.active{box-shadow:0 0 12px currentColor;transform:scale(1.06)}
+  .pill-pend{background:rgba(255,238,88,.1);color:var(--gold);border-color:rgba(255,238,88,.25)}
+
+  /* ── CONTROLS ── */
+  .controls{display:flex;flex-wrap:wrap;gap:10px;padding:16px 40px;border-bottom:1px solid var(--border);align-items:center}
+  .search-wrap{position:relative;flex:1;min-width:200px}
+  .search-wrap input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:8px;
+    color:var(--text);padding:9px 12px 9px 36px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border .2s}
+  .search-wrap input:focus{border-color:var(--fs-light)}
+  .search-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+  .btn{padding:9px 16px;border-radius:8px;border:none;font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;font-size:14px;letter-spacing:.05em;cursor:pointer;transition:all .2s;text-transform:uppercase}
+  .btn-primary{background:linear-gradient(135deg,var(--fs-blue),var(--fs-dark));color:#fff;
+    box-shadow:0 2px 12px rgba(21,101,192,.4)}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(21,101,192,.6)}
+  .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn-outline:hover{border-color:var(--fs-light);color:var(--fs-light)}
+
+  /* ── MAIN ── */
+  main{padding:20px 40px}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:22px}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;
+    transition:border-color .2s}
+  .stat-card:hover{border-color:rgba(144,202,249,.3)}
+  .stat-card .num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;line-height:1}
+  .stat-card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+
+  /* ── TABLE ── */
+  .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .table-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border)}
+  .table-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  table{width:100%;border-collapse:collapse}
+  thead th{background:rgba(21,101,192,.12);padding:9px 12px;text-align:left;font-size:11px;font-weight:600;
+    color:var(--fs-light);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;border-bottom:1px solid var(--border)}
+  tbody tr{border-top:1px solid var(--border);transition:background .12s}
+  tbody tr.ok{background:rgba(255,238,88,.07)}
+  tbody tr.ok:hover{background:rgba(255,238,88,.12)}
+  tbody tr.pend{background:var(--pend);opacity:.75}
+  tbody tr.pend:hover{opacity:1;background:rgba(255,255,255,.04)}
+  tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
+
+  .cat-badge{display:inline-block;padding:2px 9px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.05em}
+  .b-U6 {background:var(--U6bg); color:var(--U6)}
+  .b-U8 {background:var(--U8bg); color:var(--U8)}
+  .b-U10{background:var(--U10bg);color:var(--U10)}
+  .b-U12{background:var(--U12bg);color:var(--U12)}
+  .b-U14{background:var(--U14bg);color:var(--U14)}
+  .b-U16{background:var(--U16bg);color:var(--fs-light)}
+
+  .status-ok  {display:inline-block;padding:2px 7px;border-radius:7px;font-size:11px;font-weight:700;
+    background:rgba(255,238,88,.18);color:var(--gold);letter-spacing:.03em}
+  .status-pend{display:inline-block;padding:2px 7px;border-radius:7px;font-size:11px;
+    background:rgba(255,255,255,.06);color:var(--muted)}
+  .pb{font-size:11px;padding:2px 7px;border-radius:7px;background:rgba(255,255,255,.07);color:var(--muted)}
+  .pb.arch{background:rgba(144,202,249,.15);color:var(--fs-light)}
+  .pt{font-size:10px;padding:1px 5px;border-radius:5px;background:rgba(144,202,249,.15);color:var(--fs-light);margin-left:3px}
+  .new-tag{font-size:10px;padding:1px 6px;border-radius:5px;background:rgba(255,238,88,.2);color:var(--gold);margin-left:3px}
+
+  /* ── MODAL ── */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);
+    z-index:1000;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--card2);border:1px solid rgba(144,202,249,.2);border-radius:18px;
+    width:100%;max-width:540px;padding:28px;max-height:90vh;overflow-y:auto;animation:si .2s ease}
+  @keyframes si{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal h2{font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:900;
+    text-transform:uppercase;margin-bottom:14px;color:var(--fs-light)}
+  .cat-prev{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;
+    padding:10px 14px;font-size:13px;margin-bottom:12px;min-height:38px;color:var(--muted)}
+  .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .fr.full{grid-template-columns:1fr}
+  label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+  input[type=text],input[type=email],select{width:100%;background:rgba(255,255,255,.06);
+    border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 11px;
+    font-family:'Barlow',sans-serif;font-size:14px;outline:none;transition:border .2s}
+  input:focus,select:focus{border-color:var(--fs-light)}
+  select option{background:#0D1F36}
+  .mf{display:flex;gap:10px;margin-top:14px;justify-content:flex-end}
+
+  /* ── FOOTER ── */
+  .export-bar{display:flex;gap:10px;flex-wrap:wrap;padding:14px 40px;border-top:1px solid var(--border);align-items:center}
+  .export-bar span{font-size:12px;color:var(--muted)}
+
+  @media(max-width:700px){
+    header,.pills,.controls,main,.export-bar,.legend{padding-left:14px;padding-right:14px}
+    .fr{grid-template-columns:1fr}
+    thead th:nth-child(n+8),tbody td:nth-child(n+8){display:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo-mark">🏒</div>
+    <div>
+      <h1>Torneo <em>Olimpia</em></h1>
+      <div class="subtitle">Fantasy Skate · Buenos Aires · 1 de Mayo 2026</div>
+      <div class="rule-note">♀ Niñas compiten en categoría +1</div>
+    </div>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="swatch swatch-ok"></div> Confirmado</div>
+  <div class="legend-item"><div class="swatch swatch-pend"></div> Pendiente de confirmación</div>
+</div>
+
+<div class="pills" id="filterPills">
+  <button class="pill pill-all active" onclick="filterCat('all',this)">Todos</button>
+  <button class="pill pill-U6"   onclick="filterCat('U6',this)">U6</button>
+  <button class="pill pill-U8"   onclick="filterCat('U8',this)">U8</button>
+  <button class="pill pill-U10"  onclick="filterCat('U10',this)">U10</button>
+  <button class="pill pill-U12"  onclick="filterCat('U12',this)">U12</button>
+  <button class="pill pill-U14"  onclick="filterCat('U14',this)">U14</button>
+  <button class="pill pill-U16"  onclick="filterCat('U16',this)">U16</button>
+  <button class="pill pill-pend" onclick="filterCat('pend',this)">⏳ Pendientes</button>
+</div>
+
+<div class="controls">
+  <div class="search-wrap"><input type="text" id="searchInput" placeholder="Buscar nombre, apellido, DNI..." oninput="renderTable()"></div>
+  <button class="btn btn-primary" onclick="openModal()">+ Agregar Jugador</button>
+  <button class="btn btn-outline" onclick="exportCSV()">↓ CSV</button>
+</div>
+
+<main>
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-title">Nómina · Torneo Olimpia</span>
+      <span id="countInfo" style="font-size:13px;color:var(--muted)"></span>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Estado</th><th>Cat.</th><th>♀/♂</th>
+          <th>Nombre</th><th>Apellido</th><th>DNI</th>
+          <th>Año</th><th>Base</th><th>Puesto</th><th>Casaca</th><th>Origen</th>
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<div class="export-bar">
+  <span>Torneo Olimpia 2026 · Fantasy Skate</span>
+  <button class="btn btn-outline" style="font-size:12px;padding:5px 12px" onclick="window.print()">🖨 PDF</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>+ Nuevo Jugador</h2>
+    <div class="cat-prev" id="catPrev">Completá año de nacimiento y género para ver la categoría.</div>
+    <div class="fr">
+      <div><label>Nombre *</label><input type="text" id="fn" placeholder="Nombre"></div>
+      <div><label>Apellido *</label><input type="text" id="fa" placeholder="Apellido"></div>
+    </div>
+    <div class="fr">
+      <div><label>Año de Nacimiento *</label><input type="text" id="fy" placeholder="2016" maxlength="4" oninput="prevCat()"></div>
+      <div><label>Género *</label>
+        <select id="fg" onchange="prevCat()">
+          <option value="M">Varón (♂)</option>
+          <option value="F">Niña (♀ → +1 cat.)</option>
+        </select>
+      </div>
+    </div>
+    <div class="fr">
+      <div><label>Fecha exacta (DD/MM/AAAA)</label><input type="text" id="fb" placeholder="26/09/2016"></div>
+      <div><label>DNI</label><input type="text" id="fd" placeholder="00000000"></div>
+    </div>
+    <div class="fr">
+      <div><label>Puesto</label>
+        <select id="fp"><option>Jugador</option><option>Jugadora</option><option>Arquero</option><option>Arquera</option></select>
+      </div>
+      <div><label># Casaca</label><input type="text" id="fc" placeholder="—"></div>
+    </div>
+    <div class="fr">
+      <div><label>Obra Social</label><input type="text" id="fos" placeholder="—"></div>
+      <div><label>Origen</label>
+        <select id="for"><option>Club</option><option>Colegio Ice 4to</option><option>Colegio Ice 5to</option><option>Colegio</option><option>Otro</option></select>
+      </div>
+    </div>
+    <div class="fr full"><div><label>Email</label><input type="email" id="fe" placeholder="correo@ejemplo.com"></div></div>
+    <div class="fr full">
+      <div><label>Estado</label>
+        <select id="fok">
+          <option value="0">⏳ Pendiente de confirmación</option>
+          <option value="1">✓ Confirmado</option>
+        </select>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="addPlayer()">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS={U6:[2019,2020],U8:[2017,2018],U10:[2015,2016],U12:[2013,2014],U14:[2011,2012],U16:[2009,2010]};
+const CAT_ORDER=['U6','U8','U10','U12','U14','U16'];
+function getBase(y){for(const[c,ys]of Object.entries(CATS))if(ys.includes(y))return c;return null}
+function getCat(y,f){const b=getBase(y);if(!b)return null;if(f){const i=CAT_ORDER.indexOf(b);return CAT_ORDER[i+1]||b}return b}
+
+// Pendientes (sin amarillo en el original)
+const PENDING_DNIS=new Set(['56278362','55507249','56384128','55486079','55067560','55299912','55004066','54892611']);
+
+let players=[
+  {n:"Alma",a:"González",d:"57104344",y:2018,b:"16/06/2018",p:"Arquera",c:"10",os:"Swiss Medical",e:"noeliadiaz317@gmail.com",o:"Club",f:true,ian:false},
+  {n:"Bautista",a:"de Luca",d:"58253605",y:2020,b:"26/04/2020",p:"Jugador",c:"—",os:"Sancor",e:"",o:"Club",f:false,ian:false},
+  {n:"Kimey",a:"Giustina Link",d:"56816381",y:2018,b:"03/03/2018",p:"Jugador",c:"No tiene",os:"Omint",e:"linknaike@gmail.com",o:"Club",f:true,ian:false},
+  {n:"Boris",a:"Haroshka",d:"96241176",y:2020,b:"23/02/2020",p:"Jugador",c:"—",os:"No tiene",e:"",o:"Club",f:false,ian:false},
+  {n:"Luz",a:"Mendez Paz",d:"57334757",y:2018,b:"17/08/2018",p:"Jugador",c:"—",os:"OSDE 210",e:"",o:"Club",f:true,ian:false},
+  {n:"Franco",a:"Hilara",d:"57426704",y:2018,b:"05/12/2018",p:"Jugador",c:"No tiene",os:"—",e:"",o:"Club",f:false,ian:false},
+  {n:"Simón",a:"Boesing",d:"56280210",y:2017,b:"13/05/2017",p:"Jugador",c:"5",os:"Osuthgra",e:"esandidelfii99@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Konstantin",a:"Bykovski",d:"55986253",y:2016,b:"01/11/2016",p:"Jugador",c:"-",os:"OSDE",e:"bykovskialexei@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Valentino",a:"Di Chiara",d:"56043665",y:2017,b:"24/01/2017",p:"Jugador",c:"24",os:"Galeno",e:"claudichiarab@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Tomas",a:"Carrizo",d:"56077348",y:2017,b:"13/01/2017",p:"Jugador",c:"—",os:"OSDE 210",e:"menendezznavarropapaulaandrea@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Leticia",a:"Sagasti",d:"56583870",y:2017,b:"29/09/2017",p:"Jugador",c:"21",os:"Swiss Medical",e:"elena2198@hotmail.com",o:"Club",f:true,ian:false},
+  {n:"Amine",a:"Hamoud",d:"56278362",y:2017,b:"30/03/2017",p:"Jugador",c:"No tiene",os:"Bristol",e:"virginiavazquez40@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Amira",a:"Villalba",d:"55507249",y:2016,b:"25/06/2016",p:"Arquero",c:"No tiene",os:"No tiene",e:"profetigisel@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Antonella",a:"Casco",d:"56384128",y:2017,b:"12/07/2017",p:"Jugador",c:"No tiene",os:"Avalian",e:"priscilasalih20@gmail.com",o:"Club",f:true,ian:false},
+  {n:"Alex",a:"Toloza",d:"",y:2017,b:"25/01/2017",p:"Jugador",c:"—",os:"—",e:"",o:"Club",f:false,ian:false},
+  {n:"Julieta",a:"Saurina",d:"55390099",y:2016,b:"01/02/2016",p:"Jugador",c:"No tiene",os:"Privamed",e:"leticiasoledadaguirre@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Juan Ignacio",a:"Juarez",d:"55105947",y:2015,b:"03/10/2015",p:"Jugador",c:"no",os:"OSDE 210",e:"",o:"Club",f:false,ian:false},
+  {n:"Máximo",a:"Demczuk",d:"55482624",y:2016,b:"31/03/2016",p:"Jugador",c:"10",os:"Prevencion Salud",e:"ludmilaymaximo@gmail.com",o:"Colegio Ice 4to",f:false,ian:false},
+  {n:"Jose Nicolas",a:"Sanchez Diaz",d:"55073169",y:2015,b:"19/10/2015",p:"Jugador",c:"7",os:"No",e:"carinad869@gmail.com",o:"Colegio Ice 4to",f:false,ian:false},
+  {n:"Andres",a:"Flores",d:"96013509",y:2015,b:"26/01/2015",p:"Jugador",c:"19",os:"No posee",e:"alexandrapalmaf@gmail.com",o:"Colegio Ice 5to",f:false,ian:false},
+  {n:"Alexandra",a:"Arellano",d:"54733833",y:2015,b:"16/07/2015",p:"Jugador",c:"Todavia no tiene",os:"Osecac",e:"montenegroemilce738@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Abigail Ailín",a:"Maidana",d:"54907946",y:2015,b:"27/07/2015",p:"Jugador",c:"No se",os:"Dosuba",e:"natyluna1980@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Zamira",a:"Morinigo Portillo",d:"56197002",y:2015,b:"25/07/2015",p:"Jugador",c:"9",os:"No tiene",e:"bpalaciosgarelli@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Sofia",a:"Quineteros Beraldi",d:"55988069",y:2016,b:"05/11/2016",p:"Jugador",c:"16",os:"—",e:"dinasdise@gmail.com",o:"Club",f:true,ian:false},
+  {n:"Pedro Noah",a:"Bezenzette",d:"55483923",y:2016,b:"29/03/2016",p:"Jugador",c:"11",os:"—",e:"gbezenzette@fvet.uba.ar",o:"Club",f:false,ian:false},
+  {n:"AZAREL MAXIMILIANO",a:"Barreto Aquino",d:"55486079",y:2016,b:"07/04/2016",p:"Jugador",c:"9",os:"UP",e:"gabyba2005@gmail.com",o:"Colegio Ice 4to",f:false,ian:false},
+  {n:"Mario",a:"Castillo",d:"95851208",y:2016,b:"02/04/2016",p:"Arquero",c:"No tiene aun",os:"No tiene",e:"mayripalmer2505@gmail.com",o:"Colegio Ice 4to",f:false,ian:false},
+  {n:"Benjamín",a:"Salomón",d:"54300841",y:2014,b:"21/09/2014",p:"Arquero",c:"Aun no tiene",os:"Policia Federal",e:"jesimingrino@gmail.com",o:"Colegio Ice 5to",f:false,ian:false},
+  {n:"Martina Isabella",a:"Gramajo",d:"54386536",y:2014,b:"12/11/2014",p:"Jugador",c:"12",os:"Galeno",e:"niunpelodetontaa@gmail.com",o:"Colegio Ice 5to",f:true,ian:false},
+  {n:"Juan Cruz",a:"Fieg",d:"55170331",y:2015,b:"04/12/2015",p:"Jugador",c:"—",os:"OSDE 310",e:"lucianaparisi22@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Damaris",a:"Torrico",d:"55292656",y:2015,b:"03/12/2015",p:"Jugador",c:"No tengo todavía",os:"No",e:"rosselmarina1@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Ludmila",a:"Telis Galfrascoli",d:"55478775",y:2016,b:"20/03/2016",p:"Jugador",c:"15",os:"No tiene",e:"milegal123@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Donnatella",a:"Ibarra",d:"56270712",y:2017,b:"08/06/2017",p:"Jugador",c:"15",os:"Galeno",e:"",o:"Colegio Ice",f:true,ian:false},
+  {n:"Maximo",a:"Gordillo",d:"55757264",y:2016,b:"23/08/2016",p:"Jugador",c:"no tiene",os:"Osecat",e:"floree.gonazalez@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Camila",a:"Abril Prado",d:"55067560",y:2015,b:"12/09/2015",p:"Jugador",c:"—",os:"Omint",e:"cynthiameliprado@gmail.com",o:"Club",f:true,ian:false},
+  {n:"Francesca",a:"Gallardo",d:"55299912",y:2016,b:"25/01/2016",p:"Jugador",c:"No tengo",os:"Osecac",e:"micaelacabral2513@gmail.com",o:"Colegio Ice 4to",f:true,ian:false},
+  {n:"Santino",a:"Dal Canton",d:"55004066",y:2015,b:"26/08/2015",p:"Jugador",c:"No",os:"Union Personal",e:"nataliglopez@gmail.com",o:"Colegio Ice 4to",f:false,ian:false},
+  {n:"Josías Daniel",a:"Arguello Molina",d:"54892611",y:2015,b:"02/06/2015",p:"Jugador",c:"No tiene",os:"OSDE 310",e:"molina.elisabet@gmail.com",o:"Colegio Ice 5to",f:false,ian:false},
+  {n:"Salvador",a:"Lorenzo",d:"53858069",y:2014,b:"01/04/2014",p:"Arquero",c:"9",os:"OSDE",e:"lonoguera0@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Francisco",a:"Passalacqua",d:"53720827",y:2014,b:"22/01/2014",p:"Jugador",c:"22",os:"OSDE 310",e:"",o:"Club",f:false,ian:false},
+  {n:"Matteo",a:"Sedran",d:"53717559",y:2014,b:"17/01/2014",p:"Jugador",c:"88",os:"Swiss Medical",e:"silvinaallemann@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Benjamin",a:"Sánchez Laffont",d:"53580371",y:2013,b:"28/10/2013",p:"Jugador",c:"8",os:"OSDE",e:"egastonsanchez@gmail.com",o:"Club",f:false,ian:false},
+  {n:"PAULA",a:"Ferrando Solari",d:"52091730",y:2011,b:"24/12/2011",p:"Jugador",c:"12",os:"Hospital Aleman",e:"malesolari@gmail.com",o:"Club",f:true,ian:false},
+  {n:"Juan",a:"Ferrando Solari",d:"53586756",y:2013,b:"30/11/2013",p:"Jugador",c:"66",os:"Hospital Aleman",e:"malesolari@gmail.com",o:"Club",f:false,ian:false},
+  {n:"Francisco",a:"Ponce",d:"53335383",y:2013,b:"15/08/2013",p:"Jugador",c:"—",os:"—",e:"",o:"Club",f:false,ian:false},
+  // Ian - nuevo, confirmado
+  {n:"Ian Tobias",a:"González Álvarez",d:"55764559",y:2016,b:"26/09/2016",p:"Jugador",c:"Sin casaca",os:"Osmedic",e:"matias141291@gmail.com",o:"Colegio",f:false,ian:true},
+];
+
+function isOk(p){ return !PENDING_DNIS.has(p.d) && !(p.d==='' && p.n==='Alex'); }
+function enrich(p){
+  const cat=getCat(p.y,p.f)||'Sin cat.';
+  const base=getBase(p.y)||'Sin cat.';
+  const ok=isOk(p);
+  return{...p,cat,base,promoted:p.f&&cat!==base,ok};
+}
+
+let currentCat='all';
+
+function renderStats(){
+  const ep=players.map(enrich);
+  const conf=ep.filter(p=>p.ok).length;
+  const pend=ep.filter(p=>!p.ok).length;
+  let html=`<div class="stat-card"><div class="num" style="color:var(--fs-light)">${ep.length}</div><div class="lbl">Total</div></div>`;
+  html+=`<div class="stat-card"><div class="num" style="color:var(--gold)">${conf}</div><div class="lbl">✓ Confirm.</div></div>`;
+  html+=`<div class="stat-card"><div class="num" style="color:var(--muted)">${pend}</div><div class="lbl">Pendientes</div></div>`;
+  CAT_ORDER.forEach(c=>{
+    const n=ep.filter(p=>p.cat===c).length;
+    if(!n)return;
+    html+=`<div class="stat-card"><div class="num" style="color:var(--${c})">${n}</div><div class="lbl">${c}</div></div>`;
+  });
+  const ninas=ep.filter(p=>p.f).length;
+  html+=`<div class="stat-card"><div class="num" style="color:var(--fs-light)">${ninas}</div><div class="lbl">Niñas ♀</div></div>`;
+  document.getElementById('statsGrid').innerHTML=html;
+}
+
+function renderTable(){
+  const ep=players.map(enrich);
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  let fil=ep.filter(p=>{
+    let mc=true;
+    if(currentCat==='pend') mc=!p.ok;
+    else if(currentCat!=='all') mc=p.cat===currentCat;
+    const mq=!q||p.n.toLowerCase().includes(q)||p.a.toLowerCase().includes(q)||p.d.includes(q);
+    return mc&&mq;
+  });
+  fil.sort((a,b)=>{
+    // confirmed first, then by category, then by apellido
+    if(a.ok!==b.ok) return a.ok?-1:1;
+    const co=(CAT_ORDER.indexOf(a.cat)||99)-(CAT_ORDER.indexOf(b.cat)||99);
+    return co||a.a.localeCompare(b.a);
+  });
+  document.getElementById('countInfo').textContent=`${fil.length} jugador${fil.length!==1?'es':''}`;
+  if(!fil.length){
+    document.getElementById('tableBody').innerHTML=`<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--muted)">Sin resultados</td></tr>`;
+    return;
+  }
+  document.getElementById('tableBody').innerHTML=fil.map((p,i)=>{
+    const arch=p.p.toLowerCase().includes('arquero')||p.p.toLowerCase().includes('arquera');
+    const newTag=p.ian?'<span class="new-tag">NUEVO</span>':'';
+    return`<tr class="${p.ok?'ok':'pend'}">
+      <td style="color:var(--muted);font-size:11px">${i+1}</td>
+      <td>${p.ok?'<span class="status-ok">✓</span>':'<span class="status-pend">⏳</span>'}</td>
+      <td><span class="cat-badge b-${p.cat}">${p.cat}</span>${p.promoted?'<span class="pt">+1</span>':''}</td>
+      <td style="font-size:14px">${p.f?'♀':'♂'}</td>
+      <td>${p.n}${newTag}</td>
+      <td><strong>${p.a}</strong></td>
+      <td style="color:var(--muted);font-size:12px;font-family:monospace">${p.d||'—'}</td>
+      <td style="text-align:center;font-weight:700;color:var(--fs-light)">${p.y}</td>
+      <td style="color:var(--muted);font-size:12px">${p.base}</td>
+      <td><span class="pb ${arch?'arch':''}">${p.p}</span></td>
+      <td style="color:var(--muted)">${p.c||'—'}</td>
+      <td style="font-size:11px;color:var(--muted)">${p.o||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterCat(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function prevCat(){
+  const y=parseInt(document.getElementById('fy').value);
+  const f=document.getElementById('fg').value==='F';
+  const el=document.getElementById('catPrev');
+  const base=getBase(y);const cat=getCat(y,f);
+  if(!base){el.innerHTML='⚠️ Año fuera de rango (2009–2020)';return;}
+  if(f&&cat!==base)el.innerHTML=`♀ Base: <strong>${base}</strong> → con regla niñas: <strong style="color:var(--${cat})">${cat}</strong>`;
+  else el.innerHTML=`Categoría: <strong style="color:var(--${cat})">${cat}</strong>`;
+}
+
+function openModal(){document.getElementById('modalOverlay').classList.add('open')}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  ['fn','fa','fy','fb','fd','fc','fos','fe'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fok').value='0';
+  document.getElementById('catPrev').textContent='Completá año de nacimiento y género para ver la categoría.';
+}
+
+function addPlayer(){
+  const n=document.getElementById('fn').value.trim();
+  const a=document.getElementById('fa').value.trim();
+  const y=parseInt(document.getElementById('fy').value);
+  const f=document.getElementById('fg').value==='F';
+  if(!n||!a||!y){alert('Nombre, apellido y año de nacimiento son obligatorios.');return;}
+  const dni=document.getElementById('fd').value.trim();
+  const ok=document.getElementById('fok').value==='1';
+  if(ok) PENDING_DNIS.delete(dni); // mark as confirmed if DNI present
+  players.push({n,a,d:dni,y,b:document.getElementById('fb').value.trim()||String(y),
+    p:document.getElementById('fp').value,c:document.getElementById('fc').value.trim()||'—',
+    os:document.getElementById('fos').value.trim()||'—',e:document.getElementById('fe').value.trim(),
+    o:document.getElementById('for').value,f,ian:true});
+  closeModal();renderStats();renderTable();
+}
+
+function exportCSV(){
+  const ep=players.map(enrich);
+  const h=['Estado','Categoría','Cat.Base','+1','Género','Nombre','Apellido','DNI','Año','Fecha','Puesto','Casaca','Obra Social','Email','Origen'];
+  const rows=ep.map(p=>[p.ok?'Confirmado':'Pendiente',p.cat,p.base,p.promoted?'Sí':'No',p.f?'♀':'♂',p.n,p.a,p.d,p.y,p.b,p.p,p.c,p.os,p.e,p.o]
+    .map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob(['\ufeff'+[h.join(','),...rows].join('\n')],{type:'text/csv;charset=utf-8;'})),download:'Torneo_Olimpia_2026.csv'});a.click();
+}
+
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+renderStats();renderTable();
+</script>
+</body>
+</html>
